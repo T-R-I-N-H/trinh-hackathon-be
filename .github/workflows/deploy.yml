@@ -50,7 +50,6 @@ jobs:
           port: 22
           source: "trinh-1.0.0.jar"
           target: "/opt/trinh-be"
-          rename: "trinh-be.jar"
 
       - name: Restart Spring Boot service
         uses: appleboy/ssh-action@master
@@ -59,6 +58,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
+            sudo cp /opt/trinh-be/trinh-1.0.0.jar /opt/trinh-be/trinh-be.jar
             sudo systemctl daemon-reload
             sudo systemctl restart trinh-be
             sudo systemctl status trinh-be --no-pager
