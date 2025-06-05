@@ -26,7 +26,7 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Upload JAR artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: trinh-be
           path: target/*.jar
@@ -59,4 +59,4 @@ jobs:
           script: |
             sudo systemctl daemon-reload
             sudo systemctl restart trinh-be
-            sudo systemctl status myapp.service --no-pager
+            sudo systemctl status trinh-be --no-pager
