@@ -1,10 +1,10 @@
-package trinh_hackathon_be.trinh;
+package trinh_be.trinh;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class TrinhHackathonBeApplicationTests {
+class TrinhBeApplicationTests {
 
 	@Test
 	void contextLoads() {
