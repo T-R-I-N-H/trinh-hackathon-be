@@ -3,9 +3,9 @@ package trinh_be.config;
 import io.github.cdimascio.dotenv.Dotenv;
 
 public class ServerConfig {
-    private static final String AI_URL;
-    private static final String AI_API_KEY;
-    private static final String FE_URL;
+    public static final String AI_URL;
+    public static final String AI_API_KEY;
+    public static final String FE_URL;
 
     static {
         Dotenv env = Dotenv.load();

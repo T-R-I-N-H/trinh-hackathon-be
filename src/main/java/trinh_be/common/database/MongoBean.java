@@ -1,25 +1,21 @@
-package trinh_be.common;
+package trinh_be.common.database;
 
-import com.mongodb.client.MongoClient;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import io.github.cdimascio.dotenv.Dotenv;
-import jakarta.annotation.PostConstruct;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.stereotype.Component;
-import trinh_be.utils.SpringContextUtils;
 
-@Getter
-@Component
+@Configuration
 @Slf4j
-public class TMongoTemplate {
-    private MongoTemplate template;
+public class MongoBean {
 
-    @PostConstruct
-    private void loadConfig() {
+    @Bean
+    public MongoTemplate mongoTemplate() {
         try {
             Dotenv env = Dotenv.load();
             String url = env.get("DATABASE_URL");
@@ -30,14 +26,11 @@ public class TMongoTemplate {
                     .applyConnectionString(connectionString)
                     .build();
             MongoClient client = MongoClients.create(mongoClientSettings);
-            template = new MongoTemplate(client, database);
             log.info("Connected to MongoDB");
+            return new MongoTemplate(client, database);
         } catch (Exception ex) {
             log.error(ex.getMessage());
+            throw new RuntimeException("Failed to connect to MongoDB", ex);
         }
-    }
-
-    public static TMongoTemplate getInstance() {
-        return SpringContextUtils.getSingleton(TMongoTemplate.class);
     }
 }
