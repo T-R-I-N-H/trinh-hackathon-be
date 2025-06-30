@@ -1,5 +1,6 @@
 package trinh_be.modules.auth.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +12,7 @@ import trinh_be.modules.auth.service.AuthService;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
+@Tag(name = "Authentication", description = "Authentication APIs")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
