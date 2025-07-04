@@ -6,6 +6,7 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.annotation.PostConstruct;
+import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 import trinh_be.modules.user.model.User;
 import trinh_be.modules.user.service.UserService;
@@ -14,6 +15,7 @@ import trinh_be.utils.SpringContextUtils;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Collections;
 
 @Service
 public class AuthService {
@@ -29,7 +31,7 @@ public class AuthService {
     public String login(String googleIdToken) throws GeneralSecurityException, IOException {
         GoogleIdToken.Payload payload = getGoogleTokenPayload(googleIdToken);
         if (payload == null) {
-            throw new IllegalArgumentException("Invalid Google ID token");
+            throw new BadRequestException("Invalid Google ID token");
         }
 
         String email = payload.getEmail();
@@ -51,14 +53,14 @@ public class AuthService {
     private GoogleIdToken.Payload getGoogleTokenPayload(String token) throws GeneralSecurityException, IOException {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier
                 .Builder(GoogleNetHttpTransport.newTrustedTransport(), GsonFactory.getDefaultInstance())
-//                .setAudience(Collections.singletonList(GOOGLE_CLIENT_ID))
+                .setAudience(Collections.singletonList(GOOGLE_CLIENT_ID))
                 .build();
 
         try {
             GoogleIdToken idToken = verifier.verify(token);
             return idToken != null ? idToken.getPayload() : null;
         } catch (Exception e) {
-            throw new GeneralSecurityException("Invalid Google ID token", e);
+            throw new GeneralSecurityException("Invalid Google ID token");
         }
 
     }

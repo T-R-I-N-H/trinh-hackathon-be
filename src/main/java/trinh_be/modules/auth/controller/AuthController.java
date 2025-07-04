@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import trinh_be.common.api.ApiResponse;
 import trinh_be.modules.auth.dto.LoginRequestDto;
 import trinh_be.modules.auth.service.AuthService;
 
@@ -18,10 +19,13 @@ import java.security.GeneralSecurityException;
 public class AuthController {
 
     @PostMapping("/login")
-    private ResponseEntity<Object> login(
+    private ResponseEntity<ApiResponse<String>> login(
             @RequestBody LoginRequestDto loginRequest
     ) throws GeneralSecurityException, IOException {
+
         String token = loginRequest.getGoogleIdToken();
-        return ResponseEntity.ok(AuthService.getInstance().login(token));
+        return ResponseEntity.ok(
+               ApiResponse.success(AuthService.getInstance().login(token))
+        );
     }
 }
