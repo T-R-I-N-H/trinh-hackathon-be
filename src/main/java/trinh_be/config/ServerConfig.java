@@ -6,6 +6,7 @@ public class ServerConfig {
     public static final String AI_URL;
     public static final String AI_API_KEY;
     public static final String FE_URL;
+    public static final String PARSER_URL;
 
     static {
         Dotenv env = Dotenv.load();
@@ -13,6 +14,7 @@ public class ServerConfig {
         AI_URL = env.get("AI_URL");
         AI_API_KEY = env.get("AI_API_KEY");
         FE_URL = env.get("FE_URL");
+        PARSER_URL = env.get("PARSER_URL");
     }
 
     public static void main(String[] args) {

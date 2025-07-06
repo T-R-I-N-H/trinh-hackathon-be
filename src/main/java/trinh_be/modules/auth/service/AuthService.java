@@ -15,7 +15,6 @@ import trinh_be.utils.SpringContextUtils;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
 @Service
 public class AuthService {
@@ -53,7 +52,7 @@ public class AuthService {
     private GoogleIdToken.Payload getGoogleTokenPayload(String token) throws GeneralSecurityException, IOException {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier
                 .Builder(GoogleNetHttpTransport.newTrustedTransport(), GsonFactory.getDefaultInstance())
-                .setAudience(Collections.singletonList(GOOGLE_CLIENT_ID))
+//                .setAudience(Collections.singletonList(GOOGLE_CLIENT_ID))
                 .build();
 
         try {
