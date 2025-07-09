@@ -66,7 +66,7 @@ public class DiagramService {
     }
 
     private Diagram initDiagram(User user, String name, String data, String description, Map<String, String> nodeDescriptions, String memory, List<MultipartFile> files) throws IOException, InterruptedException {
-        List<String> fileUrls = new ArrayList<>();
+        List<Diagram.FileDto> fileDtos = new ArrayList<>();
         files.forEach(file -> {
             String url;
             try {
@@ -74,7 +74,12 @@ public class DiagramService {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            fileUrls.add(url);
+
+            Diagram.FileDto fileDto = new Diagram.FileDto();
+            fileDto.setName(file.getOriginalFilename());
+            fileDto.setType(FileUtils.getFileExtension(file));
+            fileDto.setUrl(url);
+            fileDtos.add(fileDto);
         });
 
         return Diagram.builder()
@@ -85,23 +90,29 @@ public class DiagramService {
                 .description(description)
                 .nodeDescriptions(new HashMap<>(nodeDescriptions))
                 .memory(memory)
-                .fileUrls(new ArrayList<>(fileUrls))
+                .files(new ArrayList<>(fileDtos))
                 .build();
     }
 
-    private VisualizeAndDescriptionAIResponse getAIDiagramData(String prompt, List<MultipartFile> files) throws IOException, InterruptedException {
+    private VisualizeAndDescriptionAIResponse getAIDiagramData(String prompt, List<MultipartFile> attachedFiles) throws IOException, InterruptedException {
         VisualizeAndDescriptionAIRequest request = VisualizeAndDescriptionAIRequest.builder()
                 .prompt(prompt)
-                .fileTexts(files.stream().map(file -> {
+                .files(attachedFiles.stream().map(file -> {
+                    String content;
                     try {
-                        return FileUtils.convertFileToString(file);
+                        content = FileUtils.convertFileToString(file);
                     } catch (BadRequestException e) {
                         throw new RuntimeException(e);
                     }
+
+                    return new VisualizeAndDescriptionAIRequest.AIFileDto(
+                            FileUtils.getFileExtension(file),
+                            content
+                    );
                 }).toList())
                 .build();
 
-        return ApiCaller.post(ServerConfig.AI_URL + "/diagram/visualize-and-description", request, VisualizeAndDescriptionAIResponse.class);
+        return ApiCaller.post(ServerConfig.AI_URL + "/visualize/visualize", request, VisualizeAndDescriptionAIResponse.class);
     }
 
     private String parseBPMN(String data) throws IOException, InterruptedException {

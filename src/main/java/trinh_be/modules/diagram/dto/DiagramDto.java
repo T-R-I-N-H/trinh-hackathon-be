@@ -24,14 +24,14 @@ public class DiagramDto {
     @JsonProperty("diagram_description")
     private String description;
 
-    @JsonProperty("file_urls")
-    private List<String> fileUrls;
+    @JsonProperty("files")
+    private List<Diagram.FileDto> files;
 
     public DiagramDto(Diagram diagram) {
         this.id = diagram.getId();
         this.data = diagram.getData();
         this.name = diagram.getName();
         this.description = diagram.getDescription();
-        this.fileUrls = new ArrayList<>(diagram.getFileUrls());
+        this.files = new ArrayList<>(diagram.getFiles());
     }
 }

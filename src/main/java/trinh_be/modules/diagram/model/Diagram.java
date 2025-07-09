@@ -30,7 +30,17 @@ public class Diagram {
 
     private Map<String, String> nodeDescriptions;
 
-    private List<String> fileUrls;
+    private List<FileDto> files;
 
     private String memory;
+
+    @Getter
+    @Setter
+    public static class FileDto {
+        private String name;
+        private String type;
+        private String url;
+    }
 }
+
+
