@@ -1,5 +1,6 @@
 package trinh_be.modules.diagram.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,7 @@ public class DiagramController {
     }
 
     @PostMapping("")
+    @Operation(description = "Initialize a new diagram")
     public ResponseEntity<ApiResponse<DiagramDto>> createNewDiagram(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             String prompt,

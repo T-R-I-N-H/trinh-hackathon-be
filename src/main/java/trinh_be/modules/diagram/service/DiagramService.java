@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import trinh_be.common.api.ApiCaller;
 import trinh_be.common.s3.S3FileService;
 import trinh_be.config.ServerConfig;
+import trinh_be.modules.diagram.conversation.ConversationService;
 import trinh_be.modules.diagram.dto.DiagramDto;
 import trinh_be.modules.diagram.dto.VisualizeAndDescriptionAIRequest;
 import trinh_be.modules.diagram.dto.VisualizeAndDescriptionAIResponse;
@@ -61,6 +62,8 @@ public class DiagramService {
         mongoTemplate.save(diagram);
 
         //TODO: conversation handling: chat history
+        ConversationService.getInstance().addMessage(true, diagram.getId(), prompt);
+        ConversationService.getInstance().addMessage(false, diagram.getId(), response.getDescription());
 
         return new DiagramDto(diagram);
     }
