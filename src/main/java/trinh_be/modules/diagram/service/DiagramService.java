@@ -49,13 +49,13 @@ public class DiagramService {
 
     public DiagramDto createNewDiagram(User user, String prompt, List<MultipartFile> files) throws IOException, InterruptedException {
         //get response from AI
-//        VisualizeAndDescriptionAIResponse response = getAIDiagramData(prompt, files);
-        VisualizeAndDescriptionAIResponse response = new VisualizeAndDescriptionAIResponse();
-        response.setName("Diagram 01");
-        response.setData(parseBPMN(MOCK_BPMN));
-        response.setDescription("Here is your diagram");
-        response.setMemory("Memory 1 2 3");
-        response.setNodeDescriptions(new HashMap<>());
+        VisualizeAndDescriptionAIResponse response = getAIDiagramData(prompt, files);
+//        VisualizeAndDescriptionAIResponse response = new VisualizeAndDescriptionAIResponse();
+//        response.setName("Diagram 01");
+//        response.setData(parseBPMN(MOCK_BPMN));
+//        response.setDescription("Here is your diagram");
+//        response.setMemory("Memory 1 2 3");
+//        response.setNodeDescriptions(new HashMap<>());
 
         //save diagram (file handling included)
         Diagram diagram = initDiagram(user, response.getName(), response.getData(), response.getDescription(), response.getNodeDescriptions(), response.getMemory(), files);
@@ -66,6 +66,14 @@ public class DiagramService {
         ConversationService.getInstance().addMessage(false, diagram.getId(), response.getDescription());
 
         return new DiagramDto(diagram);
+    }
+
+    public String getNodeDescription(String diagramId, String nodeId) throws BadRequestException {
+        Diagram diagram = mongoTemplate.findById(diagramId, Diagram.class);
+        if (diagram == null) {
+            throw new BadRequestException("Diagram not found");
+        }
+        return diagram.getNodeDescriptions().get(nodeId);
     }
 
     private Diagram initDiagram(User user, String name, String data, String description, Map<String, String> nodeDescriptions, String memory, List<MultipartFile> files) throws IOException, InterruptedException {

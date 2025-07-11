@@ -71,7 +71,7 @@ public class ConversationService {
     }
 
     private AIChatResponse chatAI(AIChatRequest request) throws IOException, InterruptedException {
-        return ApiCaller.post(ServerConfig.AI_URL + "/conversation", request, AIChatResponse.class);
+        return ApiCaller.post(ServerConfig.AI_URL + "/conversation/conversation", request, AIChatResponse.class);
     }
 
     private boolean validDiagram(User user, Diagram diagram) {

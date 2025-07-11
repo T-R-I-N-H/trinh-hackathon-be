@@ -49,4 +49,13 @@ public class DiagramController {
                 DiagramService.getInstance().createNewDiagram(user, prompt, files)
         ));
     }
+
+    @GetMapping("/{diagram_id}/{node_id}")
+    @Operation(description = "Get specific node description")
+    public ResponseEntity<ApiResponse<String>> getNodeDescription(
+            @PathVariable String diagram_id,
+            @PathVariable String node_id
+    ) throws BadRequestException {
+        return ResponseEntity.ok(ApiResponse.success(DiagramService.getInstance().getNodeDescription(diagram_id, node_id)));
+    }
 }
