@@ -13,6 +13,7 @@ import trinh_be.modules.diagram.conversation.dto.AIChatResponse;
 import trinh_be.modules.diagram.conversation.dto.ChatResponseDto;
 import trinh_be.modules.diagram.conversation.model.DiagramConversation;
 import trinh_be.modules.diagram.model.Diagram;
+import trinh_be.modules.diagram.service.DiagramService;
 import trinh_be.modules.user.model.User;
 import trinh_be.utils.SpringContextUtils;
 
@@ -42,17 +43,19 @@ public class ConversationService {
             throw new BadRequestException("Invalid diagram");
         }
 
-        //save to db
-        addMessage(true, diagramId, message);
-
         //call AI
         AIChatRequest request = new AIChatRequest();
         request.setPrompt(message);
         request.setDiagramData(diagram.getData());
         request.setMemory(diagram.getMemory());
-
         AIChatResponse response = chatAI(request);
+
+        //modify diagram (if needed)
+        handleAIChatResponse(response, diagram);
+
+        //add messages
         addMessage(false, diagramId, response.getAnswer());
+        addMessage(true, diagramId, message);
 
         return new ChatResponseDto(response);
     }
@@ -70,8 +73,23 @@ public class ConversationService {
         mongoTemplate.save(conversation);
     }
 
+    private void handleAIChatResponse(AIChatResponse response, Diagram diagram) throws IOException, InterruptedException {
+        response.setDiagramData(DiagramService.getInstance().parseBPMN(response.getDiagramData()));
+
+        if (response.getAction().equals("modify_diagram")) {
+            diagram.setData(response.getDiagramData());
+            diagram.setNodeDescriptions(response.getNodeDescriptions());
+        }
+
+        if (!response.getMemory().isEmpty()) {
+            diagram.setMemory(diagram.getMemory() + ";\n" + response.getMemory());
+        }
+
+        mongoTemplate.save(diagram);
+    }
+
     private AIChatResponse chatAI(AIChatRequest request) throws IOException, InterruptedException {
-        return ApiCaller.post(ServerConfig.AI_URL + "/conversation/conversation", request, AIChatResponse.class);
+        return ApiCaller.post(ServerConfig.AI_CONVERSATION_URL + "/conversation", request, AIChatResponse.class);
     }
 
     private boolean validDiagram(User user, Diagram diagram) {

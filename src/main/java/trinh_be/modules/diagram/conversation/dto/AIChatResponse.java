@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
+
 @Getter
 @Setter
 public class AIChatResponse {
@@ -11,8 +13,11 @@ public class AIChatResponse {
     @JsonProperty("action")
     private String action;
 
-    @JsonProperty("data")
+    @JsonProperty("diagram_data")
     private String diagramData;
+
+    @JsonProperty("detail_descriptions")
+    private Map<String, String> nodeDescriptions;
 
     @JsonProperty("answer")
     private String answer;

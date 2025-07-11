@@ -123,10 +123,10 @@ public class DiagramService {
                 }).toList())
                 .build();
 
-        return ApiCaller.post(ServerConfig.AI_URL + "/visualize/visualize", request, VisualizeAndDescriptionAIResponse.class);
+        return ApiCaller.post(ServerConfig.AI_VISUALIZE_URL + "/visualize/visualize", request, VisualizeAndDescriptionAIResponse.class);
     }
 
-    private String parseBPMN(String data) throws IOException, InterruptedException {
+    public String parseBPMN(String data) throws IOException, InterruptedException {
         Map<String, String> payload = new HashMap<>();
         payload.put("data", data);
         return ApiCaller.post(ServerConfig.PARSER_URL + "/parse", payload, String.class);
