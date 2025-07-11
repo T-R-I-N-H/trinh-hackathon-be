@@ -54,8 +54,8 @@ public class ConversationService {
         handleAIChatResponse(response, diagram);
 
         //add messages
-        addMessage(false, diagramId, response.getAnswer());
         addMessage(true, diagramId, message);
+        addMessage(false, diagramId, response.getAnswer());
 
         return new ChatResponseDto(response);
     }
