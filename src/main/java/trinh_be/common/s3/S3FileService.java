@@ -10,6 +10,8 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import trinh_be.utils.SpringContextUtils;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 @Service
@@ -29,8 +31,11 @@ public class S3FileService {
         s3Client.putObject(request, RequestBody.fromBytes(file.getBytes()));
 
         Dotenv dotenv = Dotenv.load();
-        String region = dotenv.get("AWS_REGION");
-        return "https://" + BUCKET_NAME + ".s3." + region + ".amazonaws.com/" + key;
+        String region = dotenv.get("S3_REGION");
+
+        String encodedKey = URLEncoder.encode(key, StandardCharsets.UTF_8)
+                .replace("+", "%20");
+        return "https://" + BUCKET_NAME + ".s3." + region + ".amazonaws.com/" + encodedKey;
     }
 
     public static S3FileService getInstance() {
