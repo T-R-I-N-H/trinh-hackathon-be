@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import trinh_be.common.api.ApiResponse;
 import trinh_be.modules.auth.config.CustomUserDetails;
 import trinh_be.modules.diagram.dto.DiagramDto;
+import trinh_be.modules.diagram.dto.ModifyDiagramRequest;
 import trinh_be.modules.diagram.service.DiagramService;
 import trinh_be.modules.user.model.User;
 import trinh_be.modules.user.service.UserService;
@@ -57,5 +58,17 @@ public class DiagramController {
             @PathVariable String node_id
     ) throws BadRequestException {
         return ResponseEntity.ok(ApiResponse.success(DiagramService.getInstance().getNodeDescription(diagram_id, node_id)));
+    }
+
+    @PutMapping("")
+    @Operation(description = "Modify a diagram")
+    public ResponseEntity<ApiResponse<DiagramDto>> modifyDiagram(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody ModifyDiagramRequest request
+            ) throws BadRequestException {
+        User user = UserService.getInstance().getByEmail(userDetails.getUsername());
+        return ResponseEntity.ok(ApiResponse.success(DiagramService.getInstance().
+                modifyDiagram(user, request.getDiagramId(), request.getData()))
+        );
     }
 }

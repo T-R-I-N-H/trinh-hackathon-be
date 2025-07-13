@@ -15,6 +15,7 @@ import trinh_be.modules.diagram.dto.DiagramDto;
 import trinh_be.modules.diagram.dto.VisualizeAndDescriptionAIRequest;
 import trinh_be.modules.diagram.dto.VisualizeAndDescriptionAIResponse;
 import trinh_be.modules.diagram.model.Diagram;
+import trinh_be.modules.diagram.utils.DiagramUtils;
 import trinh_be.modules.user.model.User;
 import trinh_be.utils.FileUtils;
 import trinh_be.utils.SpringContextUtils;
@@ -74,6 +75,17 @@ public class DiagramService {
             throw new BadRequestException("Diagram not found");
         }
         return diagram.getNodeDescriptions().get(nodeId);
+    }
+
+    public DiagramDto modifyDiagram(User user, String diagramId, String data) throws BadRequestException {
+        Diagram diagram = mongoTemplate.findById(diagramId, Diagram.class);
+        if (!DiagramUtils.validDiagram(user, diagram)) {
+            throw new BadRequestException("Invalid diagram: Wrong owner");
+        }
+
+        diagram.setData(data);
+        mongoTemplate.save(diagram);
+        return new DiagramDto(diagram);
     }
 
     private Diagram initDiagram(User user, String name, String data, String description, Map<String, String> nodeDescriptions, String memory, List<MultipartFile> files) throws IOException, InterruptedException {

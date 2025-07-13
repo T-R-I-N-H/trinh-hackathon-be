@@ -14,6 +14,7 @@ import trinh_be.modules.diagram.conversation.dto.ChatResponseDto;
 import trinh_be.modules.diagram.conversation.model.DiagramConversation;
 import trinh_be.modules.diagram.model.Diagram;
 import trinh_be.modules.diagram.service.DiagramService;
+import trinh_be.modules.diagram.utils.DiagramUtils;
 import trinh_be.modules.user.model.User;
 import trinh_be.utils.SpringContextUtils;
 
@@ -29,7 +30,7 @@ public class ConversationService {
     public DiagramConversation getUserConversation(User user, String diagramId) throws BadRequestException {
         Diagram diagram = mongoTemplate.find(new Query(Criteria.where("_id").is(diagramId)), Diagram.class)
                 .stream().findFirst().orElse(null);
-        if (!validDiagram(user, diagram)) {
+        if (!DiagramUtils.validDiagram(user, diagram)) {
             throw new BadRequestException("Invalid diagram");
         }
 
@@ -39,7 +40,7 @@ public class ConversationService {
     public ChatResponseDto chat(User user, String diagramId, String message) throws IOException, InterruptedException {
         Diagram diagram = mongoTemplate.find(new Query(Criteria.where("_id").is(diagramId)), Diagram.class)
                 .stream().findFirst().orElse(null);
-        if (!validDiagram(user, diagram)) {
+        if (!DiagramUtils.validDiagram(user, diagram)) {
             throw new BadRequestException("Invalid diagram");
         }
 
@@ -92,12 +93,7 @@ public class ConversationService {
         return ApiCaller.post(ServerConfig.AI_CONVERSATION_URL + "/conversation", request, AIChatResponse.class);
     }
 
-    private boolean validDiagram(User user, Diagram diagram) {
-        if (diagram == null) {
-            return false;
-        }
-        return diagram.getOwnerEmail().equals(user.getEmail());
-    }
+
 
     private DiagramConversation getConversation(String diagramId) {
         return mongoTemplate.find(new Query(Criteria.where("diagramId").is(diagramId)), DiagramConversation.class)
