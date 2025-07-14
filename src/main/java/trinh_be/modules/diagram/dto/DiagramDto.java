@@ -32,6 +32,6 @@ public class DiagramDto {
         this.data = diagram.getData();
         this.name = diagram.getName();
         this.description = diagram.getDescription();
-        this.files = new ArrayList<>(diagram.getFiles());
+        this.files = new ArrayList<>(diagram.getFiles() == null ? new ArrayList<>() : diagram.getFiles());
     }
 }

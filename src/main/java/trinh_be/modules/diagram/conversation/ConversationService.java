@@ -70,7 +70,7 @@ public class ConversationService {
         }
 
         String sender = fromUser ? "user" : "system";
-        conversation.getMessages().add(new DiagramConversation.ConversationMessage(sender, message, System.currentTimeMillis()));
+        conversation.getMessages().add(new DiagramConversation.ConversationMessage(sender, message));
         mongoTemplate.save(conversation);
     }
 
