@@ -2,6 +2,7 @@ package trinh_be.modules.diagram.conversation.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -22,6 +23,7 @@ public class DiagramConversation {
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class ConversationMessage {
         private String sender;
         private String message;
