@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import trinh_be.modules.diagram.dto.optimize.OptimizeAIResponseDto;
 
 import java.util.List;
 import java.util.Map;
@@ -30,9 +31,24 @@ public class Diagram {
 
     private Map<String, String> nodeDescriptions;
 
+    private Map<String, String> optimizationDetail;
+
     private List<FileDto> files;
 
     private String memory;
+
+    public String getMemory() {
+        return memory == null ? "" : memory;
+    }
+
+    public static Diagram optimize(Diagram diagram, OptimizeAIResponseDto response) {
+        diagram.setData(response.getData());
+        diagram.setNodeDescriptions(response.getNodeDescriptions());
+        diagram.setOptimizationDetail(response.getOptimizationDetail());
+        diagram.setMemory(diagram.getMemory() + ";\n" + response.getMemory());
+
+        return diagram;
+    }
 
     @Getter
     @Setter

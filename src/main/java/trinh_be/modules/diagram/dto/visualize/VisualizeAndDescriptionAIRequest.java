@@ -1,4 +1,4 @@
-package trinh_be.modules.diagram.dto;
+package trinh_be.modules.diagram.dto.visualize;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

@@ -12,8 +12,14 @@ import trinh_be.common.s3.S3FileService;
 import trinh_be.config.ServerConfig;
 import trinh_be.modules.diagram.conversation.ConversationService;
 import trinh_be.modules.diagram.dto.DiagramDto;
-import trinh_be.modules.diagram.dto.VisualizeAndDescriptionAIRequest;
-import trinh_be.modules.diagram.dto.VisualizeAndDescriptionAIResponse;
+import trinh_be.modules.diagram.dto.benchmark.BenchmarkAIRequestDto;
+import trinh_be.modules.diagram.dto.benchmark.BenchmarkAIResponseDto;
+import trinh_be.modules.diagram.dto.benchmark.BenchmarkResponseDto;
+import trinh_be.modules.diagram.dto.optimize.OptimizeAIRequestDto;
+import trinh_be.modules.diagram.dto.optimize.OptimizeAIResponseDto;
+import trinh_be.modules.diagram.dto.optimize.OptimizeResponseDto;
+import trinh_be.modules.diagram.dto.visualize.VisualizeAndDescriptionAIRequest;
+import trinh_be.modules.diagram.dto.visualize.VisualizeAndDescriptionAIResponse;
 import trinh_be.modules.diagram.model.Diagram;
 import trinh_be.modules.diagram.utils.DiagramUtils;
 import trinh_be.modules.user.model.User;
@@ -51,12 +57,6 @@ public class DiagramService {
     public DiagramDto createNewDiagram(User user, String prompt, List<MultipartFile> files) throws IOException, InterruptedException {
         //get response from AI
         VisualizeAndDescriptionAIResponse response = getAIDiagramData(prompt, files);
-//        VisualizeAndDescriptionAIResponse response = new VisualizeAndDescriptionAIResponse();
-//        response.setName("Diagram 01");
-//        response.setData(parseBPMN(MOCK_BPMN));
-//        response.setDescription("Here is your diagram");
-//        response.setMemory("Memory 1 2 3");
-//        response.setNodeDescriptions(new HashMap<>());
 
         //save diagram (file handling included)
         Diagram diagram = initDiagram(user, response.getName(), response.getData(), response.getDescription(), response.getNodeDescriptions(), response.getMemory(), files);
@@ -86,6 +86,54 @@ public class DiagramService {
         diagram.setData(data);
         mongoTemplate.save(diagram);
         return new DiagramDto(diagram);
+    }
+
+    public DiagramDto removeDiagram(User user, String diagramId) throws BadRequestException {
+        Diagram diagram = mongoTemplate.findById(diagramId, Diagram.class);
+        if (!DiagramUtils.validDiagram(user, diagram)) {
+            throw new BadRequestException("Invalid diagram: Wrong owner");
+        }
+
+        mongoTemplate.remove(diagram);
+        return new DiagramDto(diagram);
+    }
+
+    public OptimizeResponseDto optimize(User user, String diagramId) throws IOException, InterruptedException {
+        Diagram diagram = mongoTemplate.findById(diagramId, Diagram.class);
+        if (!DiagramUtils.validDiagram(user, diagram)) {
+            throw new BadRequestException("Invalid diagram: Wrong owner");
+        }
+
+        OptimizeAIRequestDto request = new OptimizeAIRequestDto();
+        request.setDiagramData(diagram.getData());
+        request.setMemory(diagram.getMemory());
+
+        OptimizeAIResponseDto response = ApiCaller.post(
+                ServerConfig.AI_VISUALIZE_URL + "/interaction/optimize",
+                request,
+                OptimizeAIResponseDto.class
+        );
+
+        Diagram.optimize(diagram, response);
+        mongoTemplate.save(diagram);
+
+        return new OptimizeResponseDto(response);
+    }
+
+    public BenchmarkResponseDto benchmark(User user, String diagramId) throws IOException, InterruptedException {
+        Diagram diagram = mongoTemplate.findById(diagramId, Diagram.class);
+        if (!DiagramUtils.validDiagram(user, diagram)) {
+            throw new BadRequestException("Invalid diagram: Wrong owner");
+        }
+
+        BenchmarkAIRequestDto request = new BenchmarkAIRequestDto(diagram.getData(), diagram.getMemory());
+        BenchmarkAIResponseDto response = ApiCaller.post(
+                ServerConfig.AI_VISUALIZE_URL + "/interaction/benchmark",
+                request,
+                BenchmarkAIResponseDto.class
+        );
+
+        return new BenchmarkResponseDto(response);
     }
 
     private Diagram initDiagram(User user, String name, String data, String description, Map<String, String> nodeDescriptions, String memory, List<MultipartFile> files) throws IOException, InterruptedException {

@@ -14,7 +14,7 @@ import java.time.Duration;
 
 public class ApiCaller {
     private static final HttpClient client = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofSeconds(30))
+            .connectTimeout(Duration.ofMinutes(2))
             .build();
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -22,7 +22,7 @@ public class ApiCaller {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .GET()
-                .timeout(Duration.ofSeconds(30));
+                .timeout(Duration.ofMinutes(2));
 
         builder.header("Content-Type", "application/json");
 
@@ -36,7 +36,7 @@ public class ApiCaller {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(body)))
-                .timeout(Duration.ofSeconds(30));
+                .timeout(Duration.ofMinutes(2));
 
         builder.header("Content-Type", "application/json");
 

@@ -1,27 +1,25 @@
-package trinh_be.modules.diagram.dto;
+package trinh_be.modules.diagram.dto.optimize;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Map;
 
 @Getter
-@Setter
-public class VisualizeAndDescriptionAIResponse {
+public class OptimizeAIResponseDto {
 
     @JsonProperty("diagram_data")
     private String data;
 
-    @JsonProperty("diagram_name")
-    private String name;
-
-    @JsonProperty("diagram_description")
-    private String description;
+    @JsonProperty("answer")
+    private String answer;
 
     @JsonProperty("memory")
     private String memory;
 
     @JsonProperty("detail_descriptions")
     private Map<String, String> nodeDescriptions;
+
+    @JsonProperty("optimization_detail")
+    private Map<String, String> optimizationDetail;
 }
