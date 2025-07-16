@@ -17,8 +17,8 @@ public class OptimizeResponseDto {
     @JsonProperty("optimization_detail")
     private Map<String, String> optimizationDetail;
 
-    public OptimizeResponseDto(OptimizeAIResponseDto response) {
-        this.diagramData = response.getData();
+    public OptimizeResponseDto(OptimizeAIResponseDto response, String diagramData) {
+        this.diagramData = diagramData;
         this.answer = response.getAnswer();
         this.optimizationDetail = response.getOptimizationDetail();
     }

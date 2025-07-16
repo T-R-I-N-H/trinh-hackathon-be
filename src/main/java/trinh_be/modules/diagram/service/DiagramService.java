@@ -115,9 +115,10 @@ public class DiagramService {
         );
 
         Diagram.optimize(diagram, response);
+        diagram.setData(parseBPMN(diagram.getData()));
         mongoTemplate.save(diagram);
 
-        return new OptimizeResponseDto(response);
+        return new OptimizeResponseDto(response, diagram.getData());
     }
 
     public BenchmarkResponseDto benchmark(User user, String diagramId) throws IOException, InterruptedException {
