@@ -8,6 +8,6 @@ import java.util.Map;
 @Getter
 public class BenchmarkAIResponseDto {
 
-    @JsonProperty("benchmark_data")
+    @JsonProperty("Benchmark_data")
     private Map<String, String> benchmarkData;
 }
