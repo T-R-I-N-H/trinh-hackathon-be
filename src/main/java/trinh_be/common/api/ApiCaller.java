@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.URI;
@@ -12,9 +13,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
+@Slf4j
 public class ApiCaller {
     private static final HttpClient client = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofMinutes(2))
+            .connectTimeout(Duration.ofMinutes(10))
             .build();
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -22,14 +24,15 @@ public class ApiCaller {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .GET()
-//                .timeout(Duration.ofMinutes(2))
-                ;
+                .timeout(Duration.ofMinutes(10));
 
         builder.header("Content-Type", "application/json");
 
         HttpRequest request = builder.build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+        log.info("GET Request: {}", url);
+        log.info("Response: {}", response.body());
         return mapper.readValue(response.body(), type);
     }
 
@@ -37,14 +40,15 @@ public class ApiCaller {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(body)))
-//                .timeout(Duration.ofMinutes(2))
-                ;
+                .timeout(Duration.ofMinutes(10));
 
         builder.header("Content-Type", "application/json");
 
         HttpRequest request = builder.build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+        log.info("POST Request: {}", mapper.writeValueAsString(body));
+        log.info("Response: {}", response.body());
         return type == String.class ? (T) response.body() : mapper.readValue(response.body(), type);
     }
 
