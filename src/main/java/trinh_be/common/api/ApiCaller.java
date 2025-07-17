@@ -22,7 +22,8 @@ public class ApiCaller {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .GET()
-                .timeout(Duration.ofMinutes(2));
+//                .timeout(Duration.ofMinutes(2))
+                ;
 
         builder.header("Content-Type", "application/json");
 
@@ -36,7 +37,8 @@ public class ApiCaller {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(body)))
-                .timeout(Duration.ofMinutes(2));
+//                .timeout(Duration.ofMinutes(2))
+                ;
 
         builder.header("Content-Type", "application/json");
 
