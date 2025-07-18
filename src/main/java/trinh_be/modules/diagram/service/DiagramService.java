@@ -188,9 +188,10 @@ public class DiagramService {
     }
 
     public String parseBPMN(String data) throws IOException, InterruptedException {
-        Map<String, String> payload = new HashMap<>();
-        payload.put("data", data);
-        return ApiCaller.post(ServerConfig.PARSER_URL + "/parse", payload, String.class);
+//        Map<String, String> payload = new HashMap<>();
+//        payload.put("data", data);
+//        return ApiCaller.post(ServerConfig.PARSER_URL + "/parse", payload, String.class);
+        return data;
     }
 
     private final String MOCK_BPMN = """
