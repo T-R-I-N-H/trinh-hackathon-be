@@ -114,9 +114,9 @@ public class DiagramService {
                 OptimizeAIResponseDto.class
         );
 
-        Diagram.optimize(diagram, response);
-        diagram.setData(parseBPMN(diagram.getData()));
-        mongoTemplate.save(diagram);
+//        Diagram.optimize(diagram, response);
+//        diagram.setData(parseBPMN(diagram.getData()));
+//        mongoTemplate.save(diagram);
 
         return new OptimizeResponseDto(response, diagram.getData());
     }

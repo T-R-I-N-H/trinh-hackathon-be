@@ -18,7 +18,7 @@ public class OptimizeResponseDto {
     private Map<String, String> optimizationDetail;
 
     public OptimizeResponseDto(OptimizeAIResponseDto response, String diagramData) {
-        this.diagramData = diagramData;
+        this.diagramData = response.getData();
         this.answer = response.getAnswer();
         this.optimizationDetail = response.getOptimizationDetail();
     }
